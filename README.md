@@ -20,8 +20,6 @@
 
 ---
 
-## 📸 Screenshots
-
 | 3D Globe | 2D Map | Countries List |
 |:--------:|:------:|:--------------:|
 | Interactive globe with trip markers | Leaflet map with colored countries & layer toggle | Cards with flags, ratings, and live search |
