@@ -28,7 +28,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 ### Maps
 - **3D Globe** (Globe.gl) — slowly rotating globe with pin markers for visited countries
@@ -72,7 +72,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 travel-globe/
@@ -95,7 +95,7 @@ travel-globe/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -166,7 +166,7 @@ When adding a trip, specify the photo source:
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 ### Authentication
 
@@ -197,7 +197,7 @@ When adding a trip, specify the photo source:
 
 ---
 
-## 🐘 Switching to PostgreSQL
+## Switching to PostgreSQL
 
 Update `.env`:
 
@@ -215,7 +215,7 @@ Tables are created automatically on first run.
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```dockerfile
 FROM python:3.12-slim
@@ -234,11 +234,6 @@ docker run -p 8000:8000 --env-file .env travel-globe
 
 ---
 
-## 📄 License
-
-MIT — free to use, modify, and distribute.
-
----
 
 <p align="center">
   <sub>Built with ❤️ for those who love to travel</sub>
