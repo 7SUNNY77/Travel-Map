@@ -95,7 +95,7 @@ travel-globe/
 
 ---
 
-## 🚀 Быстрый старт
+## Быстрый старт
 
 ### Требования
 
@@ -165,7 +165,7 @@ https://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_CLIENT_ID
 
 ---
 
-## 📡 API
+## API
 
 ### Аутентификация
 
@@ -196,7 +196,7 @@ https://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_CLIENT_ID
 
 ---
 
-## 🐘 Переход на PostgreSQL
+## Переход на PostgreSQL
 
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/travel_globe
@@ -210,7 +210,7 @@ pip install psycopg2-binary
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```dockerfile
 FROM python:3.12-slim
