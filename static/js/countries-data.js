@@ -1,7 +1,3 @@
-/**
- * countries-data.js — Справочник стран: код, название, координаты, флаг.
- * Используется для выбора страны в форме + маркеры на глобусе.
- */
 const COUNTRIES = [
   { code: "AF", name: "Афганистан", lat: 33.93, lng: 67.71, flag: "🇦🇫" },
   { code: "AL", name: "Албания", lat: 41.15, lng: 20.17, flag: "🇦🇱" },
@@ -130,9 +126,6 @@ const COUNTRIES = [
   { code: "VN", name: "Вьетнам", lat: 14.06, lng: 108.28, flag: "🇻🇳" },
 ];
 
-/**
- * Быстрый поиск страны по ISO-коду.
- */
 function getCountryByCode(code) {
   return COUNTRIES.find(c => c.code === code) || null;
 }
