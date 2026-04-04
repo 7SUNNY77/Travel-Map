@@ -1,7 +1,3 @@
-/**
- * app.js — Travel Globe v2: Multi-user, tabs, 2D/3D maps.
- */
-
 const API_BASE = "";
 const API = {
   login: `${API_BASE}/api/login`,
@@ -12,7 +8,7 @@ const API = {
   adminStats: `${API_BASE}/api/admin/stats`,
 };
 
-// ─── State ───────────────────────────────────────────────────────
+
 let token = null;
 let currentUser = null;
 let trips = [];
@@ -23,30 +19,29 @@ let geoData = null;
 let currentTab = "globe";
 let currentMapStyle = "grayscale";
 
-// ─── DOM ─────────────────────────────────────────────────────────
+
 const $ = id => document.getElementById(id);
 
-// Auth
+
 const authScreen = $("authScreen");
 const mainApp = $("mainApp");
 const loginForm = $("loginForm");
 const registerForm = $("registerForm");
 
-// Nav
+
 const menuBtn = $("menuBtn");
 const navOverlay = $("navOverlay");
 const navMenu = $("navMenu");
 const navUser = $("navUser");
 const navAdminBtn = $("navAdminBtn");
 
-// Tabs
+
 const tabGlobe = $("tabGlobe");
 const tabMap2d = $("tabMap2d");
 const tabList = $("tabList");
 const tabAdmin = $("tabAdmin");
 const tabs = { globe: tabGlobe, map2d: tabMap2d, list: tabList, admin: tabAdmin };
 
-// Sheets
 const sheetOverlay = $("sheetOverlay");
 const tripSheet = $("tripSheet");
 const sheetTitle = $("sheetTitle");
@@ -61,10 +56,7 @@ const lightboxImg = $("lightboxImg");
 const hintBadge = $("hintBadge");
 const fab = $("fabAdd");
 
-
-// ═══════════════════════════════════════════════════════════════════
 //  AUTH
-// ═══════════════════════════════════════════════════════════════════
 $("showRegister").onclick = e => { e.preventDefault(); loginForm.style.display = "none"; registerForm.style.display = "block"; };
 $("showLogin").onclick = e => { e.preventDefault(); registerForm.style.display = "none"; loginForm.style.display = "block"; };
 
@@ -112,10 +104,7 @@ $("btnLogout").onclick = () => {
   closeMenu();
 };
 
-
-// ═══════════════════════════════════════════════════════════════════
 //  NAVIGATION
-// ═══════════════════════════════════════════════════════════════════
 function openMenu() { navOverlay.classList.add("open"); navMenu.classList.add("open"); }
 function closeMenu() { navOverlay.classList.remove("open"); navMenu.classList.remove("open"); }
 menuBtn.onclick = () => navMenu.classList.contains("open") ? closeMenu() : openMenu();
@@ -147,10 +136,7 @@ function switchTab(tabName) {
   if (tabName === "admin" && currentUser?.role === "admin") loadAdmin();
 }
 
-
-// ═══════════════════════════════════════════════════════════════════
 //  DATA
-// ═══════════════════════════════════════════════════════════════════
 function authHeaders() {
   return { "Content-Type": "application/json", Authorization: `Bearer ${token}` };
 }
@@ -189,9 +175,7 @@ async function loadApp() {
 }
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  3D GLOBE (markers only, no polygons)
-// ═══════════════════════════════════════════════════════════════════
 function initGlobe() {
   const container = $("globe-container");
   container.innerHTML = "";
@@ -234,10 +218,7 @@ function refreshGlobe() {
   globe.htmlElementsData(markers);
 }
 
-
-// ═══════════════════════════════════════════════════════════════════
 //  2D MAP (Leaflet + polygons + layer toggle)
-// ═══════════════════════════════════════════════════════════════════
 const TILE_URLS = {
   grayscale: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
   satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -255,7 +236,6 @@ function initLeaflet() {
   drawCountryPolygons();
   addMapMarkers();
 
-  // Layer toggle buttons
   document.querySelectorAll(".map-toggle-btn").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".map-toggle-btn").forEach(b => b.classList.remove("active"));
@@ -297,7 +277,6 @@ function drawCountryPolygons() {
 
   if (polygonLayer) leafletMap.removeLayer(polygonLayer);
 
-  // Convert TopoJSON features to GeoJSON FeatureCollection for Leaflet
   const features = geoData.filter(f => {
     const iso = NUMERIC_TO_ISO[String(f.id)] || "";
     return visitedCodes.has(iso);
@@ -355,9 +334,7 @@ function refreshMap() {
 }
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  COUNTRIES LIST (with search)
-// ═══════════════════════════════════════════════════════════════════
 function renderCountriesList(filter = "") {
   const list = $("countriesList");
   const q = filter.toLowerCase();
@@ -391,9 +368,7 @@ function renderCountriesList(filter = "") {
 $("searchInput").addEventListener("input", e => renderCountriesList(e.target.value));
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  ADMIN PANEL
-// ═══════════════════════════════════════════════════════════════════
 async function loadAdmin() {
   try {
     const [statsRes, usersRes] = await Promise.all([
@@ -430,9 +405,7 @@ async function deleteUser(userId) {
 }
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  TRIP DETAIL SHEET
-// ═══════════════════════════════════════════════════════════════════
 function openTripSheet(tripId) {
   const trip = trips.find(t => t.id === tripId);
   if (!trip) return;
@@ -483,7 +456,6 @@ $("btnCloseSheet").onclick = closeTripSheet;
 sheetOverlay.onclick = closeTripSheet;
 
 
-// ─── Photos ──────────────────────────────────────────────────────
 async function loadPhotos(tripId) {
   const container = $("photoContainer");
   try {
@@ -497,10 +469,7 @@ async function loadPhotos(tripId) {
 function openLightbox(url) { lightboxImg.src = url; lightbox.classList.add("open"); }
 lightbox.onclick = () => { lightbox.classList.remove("open"); lightboxImg.src = ""; };
 
-
-// ═══════════════════════════════════════════════════════════════════
 //  TRIP FORM (Add / Edit)
-// ═══════════════════════════════════════════════════════════════════
 fab.onclick = () => { openTripForm(null); };
 
 function openTripForm(trip) {
@@ -567,8 +536,6 @@ function closeFormSheet() { formOverlay.classList.remove("open"); formSheet.clas
 $("btnCloseForm").onclick = closeFormSheet;
 formOverlay.onclick = closeFormSheet;
 
-
-// ─── Delete Trip ─────────────────────────────────────────────────
 async function deleteTrip(tripId) {
   if (!confirm("Удалить эту поездку?")) return;
   await fetch(`${API.trips}/${tripId}`, { method: "DELETE", headers: authHeaders() });
@@ -578,9 +545,7 @@ async function deleteTrip(tripId) {
 }
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  UTILITIES
-// ═══════════════════════════════════════════════════════════════════
 function formatDate(s) {
   if (!s) return "—";
   const [y, m, d] = s.split("-");
@@ -591,12 +556,9 @@ function formatDate(s) {
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 
-// ═══════════════════════════════════════════════════════════════════
 //  BOOT
-// ═══════════════════════════════════════════════════════════════════
 const topojsonScript = document.createElement("script");
 topojsonScript.src = "https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js";
 topojsonScript.onload = () => {
-  // App starts from auth screen — no init until login
 };
 document.head.appendChild(topojsonScript);
