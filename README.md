@@ -9,8 +9,8 @@
 <h1 align="center">🌍 Travel Globe</h1>
 
 <p align="center">
-  <b>Персональная карта путешествий с интерактивным 3D-глобусом</b><br>
-  Многопользовательское веб-приложение в стиле Apple iOS — минимализм, матовое стекло, плавные анимации.
+  <b>Personal travel map with an interactive 3D globe</b><br>
+  Multi-user web app built with Apple iOS design principles — minimalism, frosted glass, smooth animations.
 </p>
 
 <p align="center">
@@ -20,197 +20,202 @@
 
 ---
 
-## Скриншоты
+## 📸 Screenshots
 
-| 3D Глобус | 2D Карта | Список стран |
-|:---------:|:--------:|:------------:|
-| Интерактивный глобус с маркерами посещённых стран | Leaflet-карта с закрашенными странами и переключателем слоёв | Карточки с флагами, рейтингами и поиском |
-
----
-
-## Возможности
-
-### Карты
-- **3D Глобус** (Globe.gl) — вращающийся глобус с маркерами-пинами
-- **2D Карта** (Leaflet.js) — посещённые страны закрашены, переключатель «Минимализм» / «Спутник»
-- Клик на маркер → боковая панель с деталями поездки
-
-### Поездки
-- Название страны, даты, посещённые города, описание, рейтинг ★★★★★
-- Фотоальбом — автоматическая загрузка из **Яндекс Диска** (приватные папки и публичные ссылки)
-- Лайтбокс для просмотра фотографий
-
-### Пользователи
-- Регистрация и авторизация (JWT-токены)
-- Хеширование паролей (PBKDF2-SHA256)
-- Каждый пользователь видит **только свои** поездки
-- Роли: `user` и `admin`
-
-### Навигация
-- Всплывающее меню в стиле iOS (матовое стекло, `backdrop-filter: blur`)
-- Вкладки: 3D Глобус → 2D Карта → Мои страны → Админ-панель
-- Живой поиск по странам без перезагрузки страницы
-
-### Админ-панель
-- Статистика: количество пользователей и поездок
-- Список всех пользователей с возможностью удаления
-- Доступна только для `role == "admin"`
+| 3D Globe | 2D Map | Countries List |
+|:--------:|:------:|:--------------:|
+| Interactive globe with trip markers | Leaflet map with colored countries & layer toggle | Cards with flags, ratings, and live search |
 
 ---
 
-## 🛠 Технологии
+## ✨ Features
 
-| Слой | Технологии |
-|------|-----------|
+### Maps
+- **3D Globe** (Globe.gl) — slowly rotating globe with pin markers for visited countries
+- **2D Map** (Leaflet.js) — visited countries highlighted in blue, toggle between **Grayscale** and **Satellite** tile layers
+- Click any marker → side panel slides in with full trip details
+
+### Trips
+- Country name, travel dates, visited cities, description, star rating ★★★★★
+- Photo gallery — auto-loaded from **Yandex Disk** (private folders & public links)
+- Lightbox for full-screen photo viewing
+
+### Users & Auth
+- Registration and login with JWT tokens
+- Password hashing (PBKDF2-SHA256)
+- Each user sees **only their own** trips — full data isolation
+- Roles: `user` and `admin`
+
+### Navigation
+- Floating menu with iOS-style frosted glass effect (`backdrop-filter: blur`)
+- Tabs: 3D Globe → 2D Map → My Countries → Admin Panel
+- Real-time search filtering without page reload
+
+### Admin Panel
+- Dashboard with total users and trips count
+- User management — view all accounts, delete users
+- Accessible only when `role == "admin"`
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technologies |
+|-------|-------------|
 | **Frontend** | Vanilla JS, CSS (iOS Human Interface Guidelines) |
 | **3D** | [Globe.gl](https://globe.gl/) + Three.js + TopoJSON |
-| **2D** | [Leaflet.js](https://leafletjs.com/) + CartoDB / Esri тайлы |
+| **2D** | [Leaflet.js](https://leafletjs.com/) + CartoDB / Esri tiles |
 | **Backend** | [FastAPI](https://fastapi.tiangolo.com/) + SQLAlchemy |
-| **База данных** | SQLite (переносится на PostgreSQL) |
-| **Авторизация** | JWT (python-jose) + PBKDF2-SHA256 |
-| **Фото** | [Яндекс Диск REST API](https://yandex.ru/dev/disk/) |
+| **Database** | SQLite (easily migrates to PostgreSQL) |
+| **Auth** | JWT (python-jose) + PBKDF2-SHA256 |
+| **Photos** | [Yandex Disk REST API](https://yandex.ru/dev/disk/) |
 
 ---
 
-## Структура проекта
+## 📁 Project Structure
 
 ```
 travel-globe/
-├── main.py                # FastAPI — роуты, JWT, RBAC
-├── database.py            # SQLAlchemy модели (User, Trip)
-├── schemas.py             # Pydantic-схемы валидации
-├── yadisk_service.py      # Сервис Яндекс Диск API
-├── requirements.txt       # Python-зависимости
-├── .env                   # Переменные окружения
-├── .env.example           # Шаблон .env
-├── travel.db              # SQLite (создаётся автоматически)
+├── main.py                # FastAPI app — routes, JWT, RBAC
+├── database.py            # SQLAlchemy models (User, Trip)
+├── schemas.py             # Pydantic validation schemas
+├── yadisk_service.py      # Yandex Disk API service
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables
+├── .env.example           # Template for .env
+├── travel.db              # SQLite database (auto-created)
 └── static/
-    ├── index.html         # SPA — единственная HTML-страница
+    ├── index.html         # SPA — single HTML page
     ├── css/
-    │   └── style.css      # iOS-дизайн: blur, shadows, animations
+    │   └── style.css      # iOS design: blur, shadows, animations
     └── js/
-        ├── app.js         # Логика: глобус, карта, навигация, CRUD
-        └── countries-data.js  # Справочник 130+ стран
+        ├── app.js         # Core logic: globe, map, nav, CRUD
+        └── countries-data.js  # 130+ countries reference
 ```
 
 ---
 
-## Быстрый старт
+## 🚀 Quick Start
 
-### Требования
+### Prerequisites
 
 - Python 3.10+
 - pip
 
-### Установка
+### Installation
 
 ```bash
-# Клонируем репозиторий
+# Clone the repo
 git clone https://github.com/your-username/travel-globe.git
 cd travel-globe
 
-# Создаём виртуальное окружение (рекомендуется)
+# Create virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate        # Linux / macOS
 venv\Scripts\activate           # Windows
 
-# Устанавливаем зависимости
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Настройка
+### Configuration
 
 ```bash
-# Копируем шаблон переменных окружения
 cp .env.example .env            # Linux / macOS
 copy .env.example .env          # Windows
 ```
 
-Отредактируйте `.env`:
+Edit `.env`:
 
 ```env
-SECRET_KEY=ваш-секретный-ключ-для-jwt
+SECRET_KEY=your-secret-key-for-jwt
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD=надёжный-пароль
-YANDEX_DISK_TOKEN=ваш-oauth-токен
+ADMIN_PASSWORD=strong-password
+YANDEX_DISK_TOKEN=your-oauth-token
 DATABASE_URL=sqlite:///./travel.db
 ```
 
-### Запуск
+### Run
 
 ```bash
 python main.py
 ```
 
-Откройте **http://localhost:8000** в браузере.
+Open **http://localhost:8000** in your browser.
+
+Default admin credentials: `admin` / `admin123` (change in `.env`).
 
 ---
 
-## 🔑 Получение токена Яндекс Диска
+## 🔑 Yandex Disk Setup
 
-1. Создайте приложение на [oauth.yandex.ru](https://oauth.yandex.ru/)
-2. Платформа → **Веб-сервисы**, Redirect URI оставьте по умолчанию
-3. Доступы → отметьте **Чтение всего Диска** (`cloud_api:disk.read`)
-4. Получите токен на [Полигоне Яндекс Диска](https://yandex.ru/dev/disk/poligon/) или по ссылке:
+1. Create an app at [oauth.yandex.ru](https://oauth.yandex.ru/)
+2. Platform → **Web services**, keep default Redirect URI
+3. Permissions → enable **Read all of Disk** (`cloud_api:disk.read`)
+4. Get your token at the [Yandex Disk Polygon](https://yandex.ru/dev/disk/poligon/) or via:
 
 ```
-https://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_CLIENT_ID
+https://oauth.yandex.ru/authorize?response_type=token&client_id=YOUR_CLIENT_ID
 ```
 
-5. Вставьте токен в `.env` → `YANDEX_DISK_TOKEN`
+5. Paste the token into `.env` → `YANDEX_DISK_TOKEN`
 
-В форме поездки укажите путь:
-- Приватная папка: `/Photos/Japan`
-- Публичная ссылка: `https://disk.yandex.ru/d/abc123` (токен не нужен)
-
----
-
-## API
-
-### Аутентификация
-
-| Метод | Эндпоинт | Описание |
-|:-----:|----------|----------|
-| `POST` | `/api/register` | Регистрация нового пользователя |
-| `POST` | `/api/login` | Вход (возвращает JWT) |
-| `GET` | `/api/me` | Текущий пользователь |
-
-### Поездки (требуют JWT)
-
-| Метод | Эндпоинт | Описание |
-|:-----:|----------|----------|
-| `GET` | `/api/trips` | Список поездок текущего пользователя |
-| `GET` | `/api/trips/{id}` | Детали поездки |
-| `POST` | `/api/trips` | Создать поездку |
-| `PUT` | `/api/trips/{id}` | Обновить поездку |
-| `DELETE` | `/api/trips/{id}` | Удалить поездку |
-| `GET` | `/api/trips/{id}/photos` | Фотографии из Яндекс Диска |
-
-### Админ (требуют `role == "admin"`)
-
-| Метод | Эндпоинт | Описание |
-|:-----:|----------|----------|
-| `GET` | `/api/admin/users` | Список всех пользователей |
-| `DELETE` | `/api/admin/users/{id}` | Удалить пользователя |
-| `GET` | `/api/admin/stats` | Статистика (юзеры, поездки) |
+When adding a trip, specify the photo source:
+- Private folder: `/Photos/Japan`
+- Public link: `https://disk.yandex.ru/d/abc123` (no token needed)
 
 ---
 
-## Переход на PostgreSQL
+## 📡 API Reference
+
+### Authentication
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| `POST` | `/api/register` | Register a new user |
+| `POST` | `/api/login` | Log in (returns JWT) |
+| `GET` | `/api/me` | Get current user info |
+
+### Trips (require JWT)
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| `GET` | `/api/trips` | List current user's trips |
+| `GET` | `/api/trips/{id}` | Get trip details |
+| `POST` | `/api/trips` | Create a trip |
+| `PUT` | `/api/trips/{id}` | Update a trip |
+| `DELETE` | `/api/trips/{id}` | Delete a trip |
+| `GET` | `/api/trips/{id}/photos` | Get photos from Yandex Disk |
+
+### Admin (require `role == "admin"`)
+
+| Method | Endpoint | Description |
+|:------:|----------|-------------|
+| `GET` | `/api/admin/users` | List all users |
+| `DELETE` | `/api/admin/users/{id}` | Delete a user |
+| `GET` | `/api/admin/stats` | Get stats (users, trips) |
+
+---
+
+## 🐘 Switching to PostgreSQL
+
+Update `.env`:
 
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/travel_globe
 ```
 
+Install the driver:
+
 ```bash
 pip install psycopg2-binary
 ```
 
-Таблицы создадутся автоматически при запуске.
+Tables are created automatically on first run.
 
 ---
 
-## Docker
+## 🐳 Docker
 
 ```dockerfile
 FROM python:3.12-slim
@@ -229,6 +234,12 @@ docker run -p 8000:8000 --env-file .env travel-globe
 
 ---
 
+## 📄 License
+
+MIT — free to use, modify, and distribute.
+
+---
+
 <p align="center">
-  <sub>Сделано с ❤️ для тех, кто любит путешествовать</sub>
+  <sub>Built with ❤️ for those who love to travel</sub>
 </p>
