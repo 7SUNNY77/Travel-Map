@@ -1,13 +1,9 @@
-"""
-schemas.py — Pydantic-схемы v2: Users + Trips.
-"""
-
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field
 
 
-# ─── Auth ─────────────────────────────────────────────────────────
+#  Auth 
 class RegisterRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=64)
     password: str = Field(..., min_length=4, max_length=128)
@@ -35,7 +31,7 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
-# ─── Trips ────────────────────────────────────────────────────────
+# Trips
 class TripCreate(BaseModel):
     country_name: str = Field(..., min_length=1, max_length=128)
     country_code: str = Field(..., min_length=2, max_length=3)

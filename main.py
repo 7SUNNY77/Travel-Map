@@ -1,7 +1,3 @@
-"""
-main.py — Travel Globe v2: Многопользовательская система.
-"""
-
 import os
 import hashlib
 import hmac
@@ -33,7 +29,7 @@ TOKEN_EXPIRE_HOURS = 72
 security = HTTPBearer(auto_error=False)
 
 
-# ─── Хеширование паролей (SHA-256 + salt) ─────────────────────────
+# Хеширование паролей (SHA-256 + salt) 
 def hash_password(password: str) -> str:
     salt = os.urandom(16).hex()
     h = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100_000)
@@ -49,7 +45,7 @@ def verify_password(password: str, stored: str) -> bool:
         return False
 
 
-# ─── JWT ──────────────────────────────────────────────────────────
+# JWT 
 def create_token(user_id: int, username: str, role: str) -> str:
     expire = datetime.utcnow() + timedelta(hours=TOKEN_EXPIRE_HOURS)
     return jwt.encode(
@@ -81,7 +77,7 @@ def require_admin(user: User = Depends(get_current_user)) -> User:
     return user
 
 
-# ─── Lifespan ─────────────────────────────────────────────────────
+# Lifespan 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
@@ -108,7 +104,7 @@ app.add_middleware(
 )
 
 
-# ─── Регистрация / Вход ──────────────────────────────────────────
+# Регистрация / Вход
 @app.post("/api/register", response_model=TokenResponse, status_code=201)
 def register(body: RegisterRequest, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == body.username).first()
@@ -146,7 +142,7 @@ def get_me(user: User = Depends(get_current_user)):
     return user
 
 
-# ─── Поездки текущего пользователя ───────────────────────────────
+# Поездки текущего пользователя 
 @app.get("/api/trips", response_model=list[TripResponse])
 def list_my_trips(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(Trip).filter(Trip.user_id == user.id).order_by(Trip.date_from.desc()).all()
@@ -201,7 +197,7 @@ def delete_trip(trip_id: int, user: User = Depends(get_current_user), db: Sessio
     return {"deleted": trip_id}
 
 
-# ─── Админ: все пользователи ─────────────────────────────────────
+# Админ: все пользователи 
 @app.get("/api/admin/users", response_model=list[UserResponse])
 def list_users(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     return db.query(User).order_by(User.created_at.desc()).all()
@@ -226,7 +222,7 @@ def admin_stats(admin: User = Depends(require_admin), db: Session = Depends(get_
     return {"total_users": total_users, "total_trips": total_trips}
 
 
-# ─── Статика ──────────────────────────────────────────────────────
+# Статика
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 

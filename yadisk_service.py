@@ -1,8 +1,3 @@
-"""
-yadisk_service.py — Сервис для работы с API Яндекс Диска.
-Получает список изображений и прямые ссылки для скачивания.
-"""
-
 import os
 import re
 from typing import Optional
@@ -44,11 +39,9 @@ async def get_photos_from_yadisk(path: str, limit: int = 50) -> list[dict]:
     token = _get_token()
 
     async with httpx.AsyncClient(timeout=15.0) as client:
-        # ─── Публичная ссылка (не нужен токен) ──────────────
         if _is_public_link(path):
             return await _fetch_public(client, path, limit)
 
-        # ─── Приватная папка (нужен OAuth-токен) ────────────
         if not token:
             return []
         return await _fetch_private(client, token, path, limit)
@@ -61,7 +54,7 @@ async def _fetch_public(
     params = {
         "public_key": public_url,
         "limit": limit,
-        "preview_size": "M",      # Превью среднего размера
+        "preview_size": "M",      
         "preview_crop": "false",
     }
     resp = await client.get(YADISK_PUBLIC_API, params=params)

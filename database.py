@@ -1,7 +1,3 @@
-"""
-database.py — Модели данных v2: Users + Trips (привязаны к пользователям).
-"""
-
 import os
 from datetime import datetime
 
@@ -21,7 +17,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# ─── Модель пользователя ─────────────────────────────────────────
+# Модель пользователя 
 class User(Base):
     __tablename__ = "users"
 
@@ -34,7 +30,7 @@ class User(Base):
     trips = relationship("Trip", back_populates="owner", cascade="all, delete-orphan")
 
 
-# ─── Модель поездки ───────────────────────────────────────────────
+# Модель поездки 
 class Trip(Base):
     __tablename__ = "trips"
 
