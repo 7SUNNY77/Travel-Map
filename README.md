@@ -10,7 +10,8 @@
 
 <p align="center">
   <b>Personal travel map with an interactive 3D globe</b><br>
-  Multi-user web app built with  minimalism, frosted glass, smooth animations.
+  Multi-user web app built with  minimalism, frosted glass, smooth animations.<br><br>
+  🚀 <b><a href="https://travel-map-4lbh.onrender.com/">Try the Live Demo</a></b>
 </p>
 
 <p align="center">
