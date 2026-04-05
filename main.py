@@ -10,8 +10,9 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from jose import JWTError, jwt
+import httpx as httpx_lib
 from sqlalchemy.orm import Session
 
 from database import User, Trip, get_db, init_db
@@ -20,9 +21,7 @@ from schemas import (
     TripCreate, TripResponse, TripUpdate,
 )
 from yadisk_service import get_photos_from_yadisk
-from jose import JWTError, jwt import ...
-@app.get("/api/photo-proxy")
-asy...
+
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
@@ -31,7 +30,7 @@ TOKEN_EXPIRE_HOURS = 72
 security = HTTPBearer(auto_error=False)
 
 
-# Хеширование паролей (SHA-256 + salt) 
+# ─── Хеширование паролей (SHA-256 + salt) ─────────────────────────
 def hash_password(password: str) -> str:
     salt = os.urandom(16).hex()
     h = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100_000)
@@ -47,7 +46,7 @@ def verify_password(password: str, stored: str) -> bool:
         return False
 
 
-# JWT 
+# ─── JWT ──────────────────────────────────────────────────────────
 def create_token(user_id: int, username: str, role: str) -> str:
     expire = datetime.utcnow() + timedelta(hours=TOKEN_EXPIRE_HOURS)
     return jwt.encode(
@@ -79,7 +78,7 @@ def require_admin(user: User = Depends(get_current_user)) -> User:
     return user
 
 
-# Lifespan 
+# ─── Lifespan ─────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
@@ -106,7 +105,7 @@ app.add_middleware(
 )
 
 
-# Регистрация / Вход
+# ─── Регистрация / Вход ──────────────────────────────────────────
 @app.post("/api/register", response_model=TokenResponse, status_code=201)
 def register(body: RegisterRequest, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == body.username).first()
@@ -144,7 +143,7 @@ def get_me(user: User = Depends(get_current_user)):
     return user
 
 
-# Поездки текущего пользователя 
+# ─── Поездки текущего пользователя ───────────────────────────────
 @app.get("/api/trips", response_model=list[TripResponse])
 def list_my_trips(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(Trip).filter(Trip.user_id == user.id).order_by(Trip.date_from.desc()).all()
@@ -199,7 +198,35 @@ def delete_trip(trip_id: int, user: User = Depends(get_current_user), db: Sessio
     return {"deleted": trip_id}
 
 
-# Админ: все пользователи 
+# ─── Прокси для фото (Яндекс блокирует прямые ссылки) ────────────
+@app.get("/api/photo-proxy")
+async def photo_proxy(url: str, t: str = ""):
+    """Проксирует изображение с Яндекс Диска через наш сервер. Токен через query-параметр."""
+    # Проверяем токен
+    if not t:
+        raise HTTPException(status_code=401, detail="Не авторизован")
+    try:
+        jwt.decode(t, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Невалидный токен")
+    if not url or not ("yandex" in url or "ya." in url or "yadisk" in url):
+        raise HTTPException(status_code=400, detail="Недопустимый URL")
+    try:
+        async with httpx_lib.AsyncClient(timeout=20.0, follow_redirects=True) as client:
+            resp = await client.get(url)
+            if resp.status_code != 200:
+                raise HTTPException(status_code=502, detail="Не удалось загрузить фото")
+            content_type = resp.headers.get("content-type", "image/jpeg")
+            return StreamingResponse(
+                iter([resp.content]),
+                media_type=content_type,
+                headers={"Cache-Control": "public, max-age=3600"},
+            )
+    except httpx_lib.RequestError:
+        raise HTTPException(status_code=502, detail="Ошибка загрузки")
+
+
+# ─── Админ: все пользователи ─────────────────────────────────────
 @app.get("/api/admin/users", response_model=list[UserResponse])
 def list_users(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     return db.query(User).order_by(User.created_at.desc()).all()
@@ -224,7 +251,7 @@ def admin_stats(admin: User = Depends(require_admin), db: Session = Depends(get_
     return {"total_users": total_users, "total_trips": total_trips}
 
 
-# Статика
+# ─── Статика ──────────────────────────────────────────────────────
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
