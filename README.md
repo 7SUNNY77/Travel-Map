@@ -10,7 +10,7 @@
 
 <p align="center">
   <b>Personal travel map with an interactive 3D globe</b><br>
-  Multi-user web app built with Apple iOS design principles — minimalism, frosted glass, smooth animations.
+  Multi-user web app built with  minimalism, frosted glass, smooth animations.
 </p>
 
 <p align="center">
