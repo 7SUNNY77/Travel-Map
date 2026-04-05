@@ -20,7 +20,9 @@ from schemas import (
     TripCreate, TripResponse, TripUpdate,
 )
 from yadisk_service import get_photos_from_yadisk
-
+from jose import JWTError, jwt import ...
+@app.get("/api/photo-proxy")
+asy...
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
