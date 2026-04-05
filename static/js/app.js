@@ -456,13 +456,22 @@ $("btnCloseSheet").onclick = closeTripSheet;
 sheetOverlay.onclick = closeTripSheet;
 
 
+function proxyUrl(url) {
+  if (!url) return "";
+  return `${API_BASE}/api/photo-proxy?url=${encodeURIComponent(url)}&t=${token}`;
+}
+
 async function loadPhotos(tripId) {
   const container = $("photoContainer");
   try {
     const res = await fetch(`${API.trips}/${tripId}/photos`, { headers: authHeaders() });
     const photos = await res.json();
     if (!photos.length) { container.innerHTML = `<div class="photos-placeholder">Фотографии пока не добавлены</div>`; return; }
-    container.innerHTML = `<div class="photo-grid">${photos.map(p => `<img src="${p.preview}" alt="${p.name}" loading="lazy" onclick="openLightbox('${p.full}')" />`).join("")}</div>`;
+    container.innerHTML = `<div class="photo-grid">${photos.map(p => {
+      const prev = proxyUrl(p.preview);
+      const full = proxyUrl(p.full);
+      return `<img src="${prev}" alt="${p.name}" loading="lazy" onclick="openLightbox('${full}')" />`;
+    }).join("")}</div>`;
   } catch { container.innerHTML = `<div class="photos-placeholder">Не удалось загрузить фото</div>`; }
 }
 
